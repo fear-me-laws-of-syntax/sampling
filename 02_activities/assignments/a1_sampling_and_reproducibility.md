@@ -13,7 +13,28 @@ Alter the code so that it is reproducible. Describe the changes you made to the 
 # Author: Kate Antonova
 
 ```
-Please write your explanation here...
+CODE CHANGES:
+
+1. Make sure the code result is reproducible every time it's run:
+Set a random seed, np.random.seed(111) at the start to ensure the random choices are the same every time the code runs (same people get infected, same people get traced, same proportions for weddings vs. brunches)
+
+2. Reduce simulations from 1000 to 100:
+The script runs faster, but results may be more variable because of the smaller sample size. But since we locked the random seed, the result will always be the same every time the code runs.
+
+
+STAGES OF SAMPLING:
+
+Infection: 10% of all attendees are randomly infected.
+Primary tracing: 20% of infected people are randomly traced back to their event.
+Secondary tracing: if 2+ traced cases are from the same event, everyone infected there gets traced, which overrepresents weddings in the data (the bias described in the blog post).
+
+
+Sampling frame: all 1000 attendees.
+Sample size: all infected attendees.
+Distribution: binomial distribution - each person has a fixed probability (10%) of being infected, and each person has a probability of obtaining one of two outcomes (infected or not).
+
+
+
 
 ```
 
