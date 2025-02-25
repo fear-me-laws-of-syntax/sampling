@@ -22,19 +22,41 @@ Set a random seed, np.random.seed(111) at the start to ensure the random choices
 The script runs faster, but results may be more variable because of the smaller sample size. But since we locked the random seed, the result will always be the same every time the code runs.
 
 
+
 STAGES OF SAMPLING:
 
-Infection: 10% of all attendees are randomly infected.
-Primary tracing: 20% of infected people are randomly traced back to their event.
-Secondary tracing: if 2+ traced cases are from the same event, everyone infected there gets traced, which overrepresents weddings in the data (the bias described in the blog post).
+1. Initial population assignment (deterministic)
+Function: pd.DataFrame
+Sampling frame: weddings: 200 attendees (2 weddings of 100 each); brunches: 800 attendees (80 brunches of 10 each).
+Sample size: 1000 attendees
+Distribution: deterministic allocation based on predefined event proportions.
+Relation to blog: matches Whitby’s explicit description of event types and sizes.
 
+2. Infection sampling (random infection assignment)
+Function: np.random.choice
+Sampling frame: all 1000 attendees
+Sample size: 10% of infected (100 people randomly)
+Distribution: binomial distribution approximation, implemented as simple random sampling without replacement.
+Relation to blog: matches Whitby’s assumption that each attendee independently has a fixed probability of infection.
 
-Sampling frame: all 1000 attendees.
-Sample size: all infected attendees.
-Distribution: binomial distribution - each person has a fixed probability (10%) of being infected, and each person has a probability of obtaining one of two outcomes (infected or not).
+3. Primary contact tracing (random tracing selection)
+Function: np.random.rand
+Sampling frame: infected attendees (100 people)
+Sample size: approx 20% of infected cases (20 people)
+Distribution: bernoulli distribution (each infected attendee independently has 20% chance of being traced).
+Relation to blog: Whitby mentions resource limitations meaning only some infected people are initially traced.
 
+4. Secondary contact tracing (conditional sampling)
+Functions: pandas conditional selection (logical indexing)
+Sampling frame: events with at least 2 traced infected attendees.
+Sample size: deterministic — all infected attendees from triggered events.
+Distribution: conditional deterministic inclusion based on event-level infection counts.
+Relation to blog: represents Whitby’s core argument about biased tracing towards larger events (weddings).
 
-
+5. Ensuring reproducibility
+Function: np.random.seed()
+Reason: to fix randomness to obtain identical results across runs.
+Relation to blog: improves reproducibility, ensuring consistent analysis results, independent from Whitby's simulation runs.
 
 ```
 
